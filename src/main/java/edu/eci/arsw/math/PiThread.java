@@ -44,7 +44,7 @@ public class PiThread extends Thread {
                 }
 
                 sum = 16 * (sum - Math.floor(sum));
-                digits[i] = (byte) sum;
+                Main.digits[i] = (byte) sum;
             }
 
 

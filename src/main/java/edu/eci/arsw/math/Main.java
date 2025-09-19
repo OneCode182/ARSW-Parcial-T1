@@ -13,10 +13,15 @@ import java.util.Arrays;
  */
 public class Main {
 
+    public static byte[] digits;
+
     public static void main(String a[]) {
+
         System.out.println(bytesToHex(PiDigits.getDigits(0, 10, 1)));
         System.out.println(bytesToHex(PiDigits.getDigits(1, 100, 2)));
-        System.out.println(bytesToHex(PiDigits.getDigits(1, 1000000, 4)));
+        System.out.println(bytesToHex(PiDigits.getDigits(2, 1000000, 4)));
+
+        digits = new byte[100000];
 
         // PiThread thread1 = new PiThread(0);
         // PiThread thread2 = new PiThread(0);
@@ -41,7 +46,6 @@ public class Main {
         }
         StringBuilder sb=new StringBuilder();
         for (int i=0;i<hexChars.length;i=i+2){
-            //sb.append(hexChars[i]);
             sb.append(hexChars[i+1]);            
         }
         return sb.toString();

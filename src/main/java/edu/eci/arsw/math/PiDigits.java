@@ -16,6 +16,9 @@ public class PiDigits {
 
     private static boolean anyAlive = false;
 
+
+
+
     
     /**
      * Returns a range of hexadecimal digits of pi.
@@ -25,6 +28,7 @@ public class PiDigits {
      */
     public static byte[] getDigits(int start, int count, int n) {
 
+
         for (int i = 0; i < n; i++) {
             threads.add(new PiThread(start, count));
         }
@@ -32,12 +36,8 @@ public class PiDigits {
 
         while (!anyAlive) {
             anyAlive = true;
-            break;
-
-
 
         }
-
 
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
@@ -50,11 +50,21 @@ public class PiDigits {
         byte[] digits = new byte[count];
         double sum = 0;
 
-        for (PiThread thread : threads) {
-            if (thread.isAlive()) {
-                break;
-            }
 
+        try {
+            while (anyAlive) {
+                anyAlive = false;
+                for (PiThread thread : threads) {
+                    if (thread.isAlive()) {
+                        anyAlive = true;
+                        break;
+                    }
+                }
+                Thread.sleep(5000);
+
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         return digits;
@@ -124,3 +134,5 @@ public class PiDigits {
     }
 
 }
+
+

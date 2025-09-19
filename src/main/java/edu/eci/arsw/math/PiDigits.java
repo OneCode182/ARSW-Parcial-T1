@@ -1,5 +1,7 @@
 package edu.eci.arsw.math;
 
+import java.util.ArrayList;
+
 ///  <summary>
 ///  An implementation of the Bailey-Borwein-Plouffe formula for calculating hexadecimal
 ///  digits of pi.
@@ -8,8 +10,11 @@ package edu.eci.arsw.math;
 ///  </summary>
 public class PiDigits {
 
-    private static int DigitsPerSum = 8;
-    private static double Epsilon = 1e-17;
+    public static int DigitsPerSum = 8;
+    public static double Epsilon = 1e-17;
+    public static ArrayList<PiThread> threads = new ArrayList<>();
+
+    private static boolean anyAlive = false;
 
     
     /**
@@ -18,7 +23,22 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int start, int count) {
+    public static byte[] getDigits(int start, int count, int n) {
+
+        for (int i = 0; i < n; i++) {
+            threads.add(new PiThread(start, count));
+        }
+
+
+        while (!anyAlive) {
+            anyAlive = true;
+            break;
+
+
+
+        }
+
+
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
         }
@@ -30,18 +50,11 @@ public class PiDigits {
         byte[] digits = new byte[count];
         double sum = 0;
 
-        for (int i = 0; i < count; i++) {
-            if (i % DigitsPerSum == 0) {
-                sum = 4 * sum(1, start)
-                        - 2 * sum(4, start)
-                        - sum(5, start)
-                        - sum(6, start);
-
-                start += DigitsPerSum;
+        for (PiThread thread : threads) {
+            if (thread.isAlive()) {
+                break;
             }
 
-            sum = 16 * (sum - Math.floor(sum));
-            digits[i] = (byte) sum;
         }
 
         return digits;
@@ -53,7 +66,7 @@ public class PiDigits {
     /// <param name="m"></param>
     /// <param name="n"></param>
     /// <returns></returns>
-    private static double sum(int m, int n) {
+    public static double sum(int m, int n) {
         double sum = 0;
         int d = m;
         int power = n;
@@ -84,7 +97,7 @@ public class PiDigits {
     /// <param name="p"></param>
     /// <param name="m"></param>
     /// <returns></returns>
-    private static int hexExponentModulo(int p, int m) {
+    public static int hexExponentModulo(int p, int m) {
         int power = 1;
         while (power * 2 <= p) {
             power *= 2;
